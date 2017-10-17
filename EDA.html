@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Exploratory data analysis of the dataset</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Exploratory data analysis of the dataset</h1>
+
+<h2>Executive summary</h2>
+
+<p>The goal of this analysis is to explore the dataset that will be used to create a text prediction app. Given the computational limits, especially, memory and speed, that we must overcome, the main purpose is to gain insight about how the data can be shrank without affecting the predictive ability.</p>
+
+<h2>Summary of the files</h2>
+
+<p>The dataset consists of three files with text from blogs, news and twitter, respectively. The next tables summarizes the number of lines and words of each file.</p>
+
+<pre><code>##            words   lines
+## blogs   37334114  899288
+## news    34365936 1010242
+## twitter 30359804 2360148
+</code></pre>
+
+<p>All three files have a similar amount of words, but the twitter file needs twice as lines as the other files do. Since a line in the files can correspond to a full or trimmed line or paragraph of real text, this discrepance is probably due to the character limit of tweets. 
+Given the amount of lines of each file and their similar number of words, it is better to explore the data using a subset of the lines. For the rest of the analysis, a random subset of 5% of each file&#39;s lines has been used.</p>
+
+<h1>Frequencies of n-grams</h1>
+
+<p>In order to build the app, the most useful and interesting information are the frequencies of n-grams. The frequencies are independent of the number of lines, and for the app we will use the probabilites, so they are a better statistic than the total number of observations of each n-gram. Since we expect the probabilites to be extremely small, for the exploratory analysis it is better to use the frequencies in percentage.</p>
+
+<pre><code>## [1] &quot;Frequencies of unigrams&quot;
+</code></pre>
+
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## 0.000025 0.000025 0.000025 0.000762 0.000100 5.931000
+</code></pre>
+
+<pre><code>## [1] &quot;Frequencies of bigrams&quot;
+</code></pre>
+
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 0.0000204 0.0000204 0.0000204 0.0000619 0.0000204 0.4434000
+</code></pre>
+
+<p>It can be seen that, as one should expect, the frequencies of most of the n-grams are very small. The medians and the minimum values are the same, which implies that more than 50% of the n-grams appear only once in every 4 millions. Thus, we can assume that these terms are not relevant for the purpose of the app.</p>
+
+<p>In spite of the great number of terms appearing only once, we can see that, in the case of unigrams, the maximum frequency is 5.30%. In order to check the relative importance of the most frequent terms, we can compute the cumulative frequency.</p>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-7"/> <img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-7"/> </p>
+
+<p>The plots show that, for the unigrams, the 10 most frequent terms are responsible of the 15% of the appearances, whereas the top 10 frequent bigrams represent only the 2% of all the bigrams. Both statistics would improve if we set a threshold not to take into account the least frequent terms.</p>
+
+<p>It would also be useful to know how many terms we need to cover the 25, 50, 75 and 90% of all the appearances.</p>
+
+<pre><code>##            X25    X50    X75     X90
+## Unigrams 51048 104390 157733  189738
+## Bigrams   2892  42098 392106 1125528
+</code></pre>
+
+<p>In terms of percentage of n-grams:</p>
+
+<pre><code>##                   X25          X50         X75         X90
+## Unigrams 2.418465e-03 0.0049456120 0.007472806 0.008989085
+## Bigrams  1.791292e-05 0.0002607532 0.002428687 0.006971471
+</code></pre>
+
+<p>In all cases, we can cover an extense amount of the data with a small percentage of the terms, altough the more terms the n-gram has, the more n-grams we need.</p>
+
+<h2>Conclusions and further work</h2>
+
+<p>This initial exploratory analysis highlights different features of the dataset that we must take into account when building the app:</p>
+
+<ul>
+<li>The dataset is huge, with only the 5% of the lines of each file the frequencies of the top terms seem reasonable.</li>
+<li>Again, with just the 5%, there is an enormous amount of terms that only appear once.</li>
+<li>The most frequent terms are prepositions, pronouns and other terms that carry few information. We need to predict them correctly because they are the terms that the users type the most, but what will distinguish our app from any other is the ability to predict correctly the terms that are not so frequent.</li>
+<li>The least frequent terms can be deleted. This would reduce the memory needed by the app.</li>
+<li>The app can be built with less random sampled data. Although, if done properly, the final data used for the app will be of the same size (it will consist of n-grams and probabilities), this can reduce the time spent building the model.</li>
+</ul>
+
+<p>Taking this into account, the next steps will be the following:</p>
+
+<ul>
+<li>Reduce the data, deleting the less frequent n-grams.</li>
+<li>Depending on the memory available and speed of the app, delete also n-grams starting with the same word that are less likely to predict. An ideal app would predict those n-grams based on the characters written by the user, but that may not be adequate in this case.</li>
+<li>Compute the probabilites of each n-gram (from unigrams to 3 or 4-grams).</li>
+<li>Create an algorithm that selects the next word based on the probabilities of the n-grams.</li>
+</ul>
+
+</body>
+
+</html>
